@@ -39,7 +39,17 @@
 
       in
       {
-        packages.default = pythonSet.mkVirtualEnv "icloudcd-env" workspace.deps.default;
+        packages.default =
+          let
+            addMeta =
+              drv:
+              drv.overrideAttrs (old: {
+                meta = (old.meta or { }) // {
+                  mainProgram = "icloudcd";
+                };
+              });
+          in
+          addMeta (pythonSet.mkVirtualEnv "icloudcd-env" workspace.deps.default);
 
         apps.default = {
           type = "app";
